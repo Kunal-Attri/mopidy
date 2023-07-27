@@ -64,11 +64,11 @@ class FileLibraryProvider(backend.LibraryProvider):
 
             if (
                 self._excluded_file_extensions
-                and dir_entry.suffix in self._excluded_file_extensions
+                and dir_entry.suffix.lower() in self._excluded_file_extensions
             ):
                 continue
 
-            if child_path.is_symlink() and not self._follow_symlinks:
+            if dir_entry.is_symlink() and not self._follow_symlinks:
                 logger.debug("Ignoring symlink: %s", uri)
                 continue
 

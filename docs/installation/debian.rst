@@ -21,8 +21,8 @@ Distribution and architecture support
 
 The packages in the apt.mopidy.com archive are built for:
 
-- **Debian 10 (Buster)**,
-  which also works for Raspbian Buster and Ubuntu 19.10 and newer.
+- **Debian 11 (Bullseye)**,
+  which also works for Raspbian Bullseye and Ubuntu 22.04 and newer.
 
 The few packages that are compiled are available for multiple CPU
 architectures:
@@ -42,11 +42,13 @@ Install from apt.mopidy.com
 
 #. Add the archive's GPG key::
 
-       wget -q -O - https://apt.mopidy.com/mopidy.gpg | sudo apt-key add -
+       sudo mkdir -p /etc/apt/keyrings
+       sudo wget -q -O /etc/apt/keyrings/mopidy-archive-keyring.gpg \
+         https://apt.mopidy.com/mopidy.gpg
 
 #. Add the APT repo to your package sources::
 
-       sudo wget -q -O /etc/apt/sources.list.d/mopidy.list https://apt.mopidy.com/buster.list
+       sudo wget -q -O /etc/apt/sources.list.d/mopidy.list https://apt.mopidy.com/bullseye.list
 
 #. Install Mopidy and all dependencies::
 
@@ -81,7 +83,11 @@ To install one of the listed packages, e.g. ``mopidy-mpd``, simply run::
    sudo apt install mopidy-mpd
 
 If you cannot find the extension you want in the APT search result, you can
-install it from PyPI using ``pip`` instead.
+install it from PyPI using ``pip`` instead. You need to make sure you have
+``pip``, the Python package installer installed::
+
+   sudo apt install python3-pip
+
 Even if Mopidy itself is installed from APT it will correctly detect and use
 extensions from PyPI installed globally on your system using::
 

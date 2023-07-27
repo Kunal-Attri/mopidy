@@ -551,8 +551,7 @@ class TestCurrentAndPendingTlTrack(BaseTest):
 @mock.patch(
     "mopidy.core.playback.listener.CoreListener", spec=core.CoreListener
 )
-class EventEmissionTest(BaseTest):
-
+class TestEventEmission(BaseTest):
     maxDiff = None  # noqa: N815
 
     def test_play_when_stopped_emits_events(self, listener_mock):
@@ -855,7 +854,6 @@ class EventEmissionTest(BaseTest):
 
 
 class TestUnplayableURI(BaseTest):
-
     tracks = [
         Track(uri="unplayable://"),
         Track(uri="dummy:b"),
@@ -902,7 +900,7 @@ class TestUnplayableURI(BaseTest):
         assert not success
 
 
-class SeekTest(BaseTest):
+class TestSeek(BaseTest):
     def test_seek_normalizes_negative_positions_to_zero(self):
         tl_tracks = self.core.tracklist.get_tl_tracks()
 
@@ -957,6 +955,14 @@ class SeekTest(BaseTest):
 
         current_tl_track = self.core.playback.get_current_tl_track()
         assert current_tl_track == tl_tracks[0]
+
+    def test_seek_stopped_goes_playing(self):
+        self.core.playback.stop()
+        self.replay_events()
+
+        self.core.playback.seek(1000)
+        self.replay_events()
+        assert self.core.playback.get_state() == core.PlaybackState.PLAYING
 
 
 class TestStream(BaseTest):
@@ -1309,7 +1315,6 @@ class TestBug1352Regression(BaseTest):
 
 
 class TestEndlessLoop(BaseTest):
-
     tracks_play = [
         Track(uri="dummy:limit_never:a"),
         Track(uri="dummy:limit_never:b"),

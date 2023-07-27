@@ -12,7 +12,7 @@ you can install Mopidy from PyPI using the ``pip`` installer.
 If you are looking to contribute or wish to install from source using ``git``
 please see :ref:`contributing`.
 
-#. First of all, you need Python 3.7 or newer. Check if you have Python and
+#. First of all, you need Python 3.9 or newer. Check if you have Python and
    what version by running::
 
        python3 --version
@@ -33,7 +33,7 @@ please see :ref:`contributing`.
 
        sudo dnf install -y gcc python3-devel python3-pip
 
-#. Then you'll need to install GStreamer >= 1.14.0, with Python bindings.
+#. Then you'll need to install GStreamer >= 1.18.0, with Python bindings.
    GStreamer is packaged for most popular Linux distributions. Search for
    GStreamer in your package manager, and make sure to install the Python
    bindings, and the "good" and "ugly" plugin sets.
@@ -105,12 +105,7 @@ Installing extensions
 If you want to use any Mopidy extensions, like Spotify support or Last.fm
 scrobbling, you need to install additional Mopidy extensions.
 
-You can install any Mopidy extension directly from PyPI with ``pip``. To list
-all the extensions available from PyPI, run::
-
-    python3 -m pip search mopidy
-
-To install one of the listed packages, e.g. ``Mopidy-MPD``, simply run::
+You can install any Mopidy extension directly from PyPI with ``pip``. Search the PyPI website to find available extensions. To install one of the listed packages, e.g. ``Mopidy-MPD``, simply run::
 
    sudo python3 -m pip install Mopidy-MPD
 

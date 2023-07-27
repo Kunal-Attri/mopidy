@@ -63,6 +63,18 @@ To get started with Mopidy, begin by reading the
 `installation docs <https://docs.mopidy.com/en/latest/installation/>`_.
 
 
+**Contributing**
+
+Begin by reading the
+`contributing <https://docs.mopidy.com/en/latest/contributing/>`_
+section of our documentation.
+If you are a developer, please also read
+`Development environment <https://docs.mopidy.com/en/latest/devenv/>`_
+and/or
+`Extension development <https://docs.mopidy.com/en/latest/extensiondev/>`_.
+We welcome all kinds of help with bug fixing, testing, documentation, and supporting other users.
+
+
 **Project resources**
 
 - `Documentation <https://docs.mopidy.com/>`_
@@ -75,8 +87,8 @@ To get started with Mopidy, begin by reading the
     :target: https://pypi.python.org/pypi/Mopidy/
     :alt: Latest PyPI version
 
-.. image:: https://img.shields.io/github/workflow/status/mopidy/mopidy/CI
-    :target: https://github.com/mopidy/mopidy/actions
+.. image:: https://img.shields.io/github/actions/workflow/status/mopidy/mopidy/ci.yml?branch=develop
+    :target: https://github.com/mopidy/mopidy/actions/workflows/ci.yml
     :alt: CI build status
 
 .. image:: https://img.shields.io/readthedocs/mopidy.svg

@@ -26,6 +26,11 @@ _MESSAGES = {
         "tracklist.previous_track() is pending deprecation, use "
         "tracklist.get_previous_tlid()"
     ),
+    # Deprecated argument value in core library:
+    "core.library.get_distinct:field_arg:track": (
+        'library.get_distinct() with "field" argument "track" is pending '
+        'deprecation, use "track_name" instead'
+    ),
 }
 
 
@@ -34,7 +39,7 @@ def warn(msg_id, pending=False):
         category = PendingDeprecationWarning
     else:
         category = DeprecationWarning
-    warnings.warn(_MESSAGES.get(msg_id, msg_id), category)
+    warnings.warn(_MESSAGES.get(msg_id, msg_id), category, stacklevel=2)
 
 
 @contextlib.contextmanager

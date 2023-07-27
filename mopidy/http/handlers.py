@@ -16,7 +16,7 @@ from mopidy import core, models
 from mopidy.internal import jsonrpc
 
 if TYPE_CHECKING:
-    from typing import ClassVar, Set
+    from typing import ClassVar
 
 
 logger = logging.getLogger(__name__)
@@ -28,16 +28,14 @@ def make_mopidy_app_factory(apps, statics):
             logger.warning(
                 "HTTP Cross-Site Request Forgery protection is disabled"
             )
-        allowed_origins = {
-            x.lower() for x in config["http"]["allowed_origins"] if x
-        }
+
         return [
             (
                 r"/ws/?",
                 WebSocketHandler,
                 {
                     "core": core,
-                    "allowed_origins": allowed_origins,
+                    "allowed_origins": config["http"]["allowed_origins"],
                     "csrf_protection": config["http"]["csrf_protection"],
                 },
             ),
@@ -46,7 +44,7 @@ def make_mopidy_app_factory(apps, statics):
                 JsonRpcHandler,
                 {
                     "core": core,
-                    "allowed_origins": allowed_origins,
+                    "allowed_origins": config["http"]["allowed_origins"],
                     "csrf_protection": config["http"]["csrf_protection"],
                 },
             ),
@@ -106,11 +104,10 @@ def _send_broadcast(client, msg):
 
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
-
     # XXX This set is shared by all WebSocketHandler objects. This isn't
     # optimal, but there's currently no use case for having more than one of
     # these anyway.
-    clients: ClassVar[Set[WebSocketHandler]] = set()
+    clients: ClassVar[set[WebSocketHandler]] = set()
 
     @classmethod
     def broadcast(cls, msg, io_loop):
@@ -177,13 +174,13 @@ def check_origin(origin, request_headers, allowed_origins):
     if origin is None:
         logger.warning("HTTP request denied for missing Origin header")
         return False
-    allowed_origins.add(request_headers.get("Host"))
+    host_header = request_headers.get("Host")
     parsed_origin = urllib.parse.urlparse(origin).netloc.lower()
     # Some frameworks (e.g. Apache Cordova) use local files. Requests from
     # these files don't really have a sensible Origin so the browser sets the
     # header to something like 'file://' or 'null'. This results here in an
     # empty parsed_origin which we choose to allow.
-    if parsed_origin and parsed_origin not in allowed_origins:
+    if parsed_origin and parsed_origin not in allowed_origins | {host_header}:
         logger.warning('HTTP request denied for Origin "%s"', origin)
         return False
     return True
@@ -201,6 +198,11 @@ class JsonRpcHandler(tornado.web.RequestHandler):
 
     def post(self):
         if self.csrf_protection:
+            # This "non-standard" Content-Type requirement forces browsers to
+            # automatically issue a preflight OPTIONS request before this one.
+            # All Origin header enforcement/checking can be limited to our OPTIONS
+            # handler and requests not vulnerable to CSRF (i.e. non-browser
+            # requests) need only set the Content-Type header.
             content_type = (
                 self.request.headers.get("Content-Type", "")
                 .split(";")[0]
@@ -209,6 +211,12 @@ class JsonRpcHandler(tornado.web.RequestHandler):
             if content_type != "application/json":
                 self.set_status(415, "Content-Type must be application/json")
                 return
+
+            origin = self.request.headers.get("Origin")
+            if origin is not None:
+                # This request came from a browser and has already had its Origin
+                # checked in the preflight request.
+                self.set_cors_headers(origin)
 
         data = self.request.body
         if not data:
@@ -236,6 +244,10 @@ class JsonRpcHandler(tornado.web.RequestHandler):
         self.set_header("Accept", "application/json")
         self.set_header("Content-Type", "application/json; utf-8")
 
+    def set_cors_headers(self, origin):
+        self.set_header("Access-Control-Allow-Origin", f"{origin}")
+        self.set_header("Access-Control-Allow-Headers", "Content-Type")
+
     def options(self):
         if self.csrf_protection:
             origin = self.request.headers.get("Origin")
@@ -245,8 +257,7 @@ class JsonRpcHandler(tornado.web.RequestHandler):
                 self.set_status(403, f"Access denied for origin {origin}")
                 return
 
-            self.set_header("Access-Control-Allow-Origin", f"{origin}")
-            self.set_header("Access-Control-Allow-Headers", "Content-Type")
+            self.set_cors_headers(origin)
 
         self.set_status(204)
         self.finish()

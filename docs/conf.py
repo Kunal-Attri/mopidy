@@ -79,7 +79,7 @@ source_suffix = ".rst"
 master_doc = "index"
 
 project = "Mopidy"
-copyright = "2009-2021, Stein Magnus Jodal and contributors"
+copyright = "2009-2023, Stein Magnus Jodal and contributors"
 
 
 release = get_version()
@@ -131,14 +131,17 @@ man_pages = [
 # -- Options for extlink extension --------------------------------------------
 
 extlinks = {
-    "issue": ("https://github.com/mopidy/mopidy/issues/%s", "#"),
-    "commit": ("https://github.com/mopidy/mopidy/commit/%s", "commit "),
-    "js": ("https://github.com/mopidy/mopidy.js/issues/%s", "mopidy.js#"),
+    "issue": ("https://github.com/mopidy/mopidy/issues/%s", "#%s"),
+    "commit": ("https://github.com/mopidy/mopidy/commit/%s", "commit %s"),
+    "js": ("https://github.com/mopidy/mopidy.js/issues/%s", "mopidy.js#%s"),
     "mpris": (
         "https://github.com/mopidy/mopidy-mpris/issues/%s",
-        "mopidy-mpris#",
+        "mopidy-mpris#%s",
     ),
-    "discuss": ("https://discourse.mopidy.com/t/%s", "discourse.mopidy.com/t/"),
+    "discuss": (
+        "https://discourse.mopidy.com/t/%s",
+        "discourse.mopidy.com/t/%s",
+    ),
 }
 
 

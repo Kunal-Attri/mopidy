@@ -58,11 +58,11 @@ Most of us use the `virtualenvwrapper
 virtualenvs, so that's what we'll be using for the examples here. First,
 install and setup virtualenvwrapper as described in their docs.
 
-To create a virtualenv named ``mopidy`` which uses Python 3.7, allows access to
+To create a virtualenv named ``mopidy``, which allows access to
 system-wide packages like GStreamer, and uses the Mopidy workspace directory as
 the "project path", run::
 
-    mkvirtualenv -a ~/mopidy-dev --python $(which python3.7) \
+    mkvirtualenv -a ~/mopidy-dev --python $(which python3) \
       --system-site-packages mopidy
 
 Now, each time you open a terminal and want to activate the ``mopidy``
@@ -106,6 +106,11 @@ Assuming you're still inside the Git repo, use pip to install Mopidy from the
 Git repo in an "editable" form::
 
     pip install --upgrade --editable .
+
+.. note::
+
+    If the above command fails with ``AttributeError: install_layout``
+    please refer to :issue:`2037` for a workaround.
 
 This will not copy the source code into the virtualenv's ``site-packages``
 directory, but instead create a link there pointing to the Git repo. Using
@@ -257,7 +262,7 @@ lints the source code for issues and a ``docs`` environment that tests that the
 documentation can be built. You can also limit tox to just test specific
 environments using the ``-e`` option, e.g. to run just unit tests::
 
-    tox -e py37
+    tox -e py39
 
 To learn more, see the `tox documentation <https://tox.readthedocs.io/>`_ .
 
@@ -265,7 +270,7 @@ To learn more, see the `tox documentation <https://tox.readthedocs.io/>`_ .
 Running unit tests
 ------------------
 
-Under the hood, ``tox -e py37`` will use `pytest <https://docs.pytest.org/>`_
+Under the hood, ``tox -e py39`` will use `pytest <https://docs.pytest.org/>`_
 as the test runner. We can also use it directly to run all tests::
 
     pytest
